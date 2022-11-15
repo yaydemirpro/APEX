@@ -1,0 +1,13 @@
+trigger OpportunityTrigger on Opportunity (before insert, before update) {
+    If (Trigger.isInsert && Trigger.isBefore ){
+        for (Opportunity opp : Trigger.new){
+            opp.Description='This opportunity was created by '+UserInfo.getName();
+        }
+    }
+    If (Trigger.isUpdate && Trigger.isBefore){
+        for (Opportunity opp : Trigger.new){
+            opp.Description='This opportunity was updated by '+UserInfo.getName();
+        }
+    }
+    
+}
