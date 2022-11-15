@@ -1,0 +1,15 @@
+trigger ProspectAccountTrigger on Account (after insert) {
+
+    List<Account> multiAcc = [SELECT Id, Name, Type FROM Account WHERE Type= 'Prospect' ];
+    List<Task> multiAccTasks = new List<Task>();
+    
+    for (Account singleAcc : multiAcc){
+      	Task singleTask = new Task();
+        singleTask.Subject= 'A new prospect account named '+singleAcc.Name+ '  has ben created.';
+        singleTask.Priority= 'Normal';
+		singleTask.Status= 'Not Started';
+        //singleTask.WhatId= singleAcc.Id;
+        multiAccTasks.add(singleTask);
+    }
+    insert multiAccTasks;
+}
