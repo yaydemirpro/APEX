@@ -1,0 +1,16 @@
+trigger LeadWelcoming on Lead (Before Update) {
+    for(Lead sLead : Trigger.new){
+        if(sLead.Email !=null && sLead.Status == 'Working - Contacted' 
+           && sLead.FirstName !=null && sLead.LastName !=null){
+               Messaging.SingleEmailMessage msg=new Messaging.SingleEmailMessage();
+               String mail = UserInfo.getUserEmail();
+               string leadmail= sLead.Email;
+               List<String> options = new List<String>{mail,sLead.Email};
+               msg.setToAddresses(options);
+               msg.setPlainTextBody('Hi '+ sLead.FirstName + ' We will contact with you as soon as possible');
+               msg.setSubject('Welcome');
+               Messaging.Email [] emails = new Messaging.Email []{msg};
+               Messaging.sendEmail(emails);
+           }
+    }
+}
