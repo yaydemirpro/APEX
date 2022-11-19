@@ -11,5 +11,7 @@ trigger ProspectAccountTrigger on Account (after insert) {
         //singleTask.WhatId= singleAcc.Id;
         multiAccTasks.add(singleTask);
     }
+    
     insert multiAccTasks;
+    
 }
