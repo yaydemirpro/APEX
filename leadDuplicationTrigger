@@ -1,6 +1,9 @@
-trigger leadDuplicationTrigger on Lead (before insert) {    
+trigger leadDuplicationTrigger on Lead (before insert) {   
+
     switch on Trigger.operationType {
+    
       when BEFORE_INSERT {
+      
            List<Lead> leads = [SELECT Id, FirstName, LastName FROM Lead];
            for (Lead singleLead : leads){
                if (singleLead.FirstName==Trigger.new[0].FirstName &&
