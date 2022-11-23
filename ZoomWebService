@@ -1,0 +1,125 @@
+@RestResource(urlMapping='/Zoom/*')
+global class ZoomWebService {
+    // https://claruswaycohort2-dev-ed.my.salesforce-sites.com/callback/services/apexrest/Zoom
+    // 
+    
+    @HttpGet
+    global static String hello(){
+        return 'Hello Apex';
+    }
+    
+    @HttpPost
+    global static String zoomMeeting(){
+        
+       CWWebHook__c newEvent = New CWWebHook__c();
+        
+        RestRequest req = RestContext.request;
+        RestResponse res = RestContext.response;
+        
+        Id intID;
+        String jsonString = req.requestBody.toString();
+        
+        
+        Map<String,Object> eventMap = (Map<String,Object>) JSON.deserializeUntyped(jsonString);
+        Map<String,Object> payloadMap = (Map<String,Object>) eventMap.get('payload');
+        Map<String,Object> objectMap = (Map<String,Object>) payloadMap.get('object');
+        
+             
+       switch on eventMap.get('event').toString() {
+            when 'meeting.updated' {        // when block 3
+                // code block 3
+            }
+            when 'meeting.created' {        
+                // meeting.created
+                    
+                    newEvent.name=eventMap.get('event').toString();
+                    newEvent.data__c=objectMap.get('start_time').toString();
+                
+                
+                String topic = objectMap.get('topic').toString();
+                    
+                    System.debug(' is $ here ?');
+                    System.debug(topic.contains('$'));
+                
+                if(topic.contains('$')){ 
+                    intID = topic.split('\\$').get(0);
+                    
+                    String isInterview=String.valueof(intID.getSobjectType());
+                  
+                    if(isInterview=='Interview__c'){
+                        
+                        // update Interview__c object meeting url  : objectMap.get('join_url').toString()
+                        Interview__c singleInterview = New Interview__c();
+                        singleInterview.id= intID;                        
+                        singleInterview.Meeting_URL__c=objectMap.get('join_url').toString();
+                        
+                        String startTime = objectMap.get('start_time').toString();
+                        String dateStr = startTime.split('T').get(0);
+                        String timeStr = startTime.split('T').get(1);
+                        
+                        Integer YYYY = Integer.valueOf(dateStr.split('-').get(0));
+                        Integer MM = Integer.valueOf(dateStr.split('-').get(1));
+                        Integer DD = Integer.valueOf(dateStr.split('-').get(2));
+                        
+                        Integer HH = Integer.valueOf(timeStr.split(':').get(0));
+                        Integer M = Integer.valueOf(timeStr.split(':').get(1));
+                        Integer S = Integer.valueOf(timeStr.split(':').get(2).replace('Z',''));
+                        
+                        
+                        System.debug(YYYY);
+                        System.debug(MM);
+                        System.debug(DD);
+                        
+                        System.debug(HH);
+                        System.debug(M);
+                        System.debug(S);
+                        
+                        System.debug(DateTime.newInstance(YYYY,MM,DD,HH,M,S));
+                                             
+                         singleInterview.Scheduled_DateTime__c= DateTime.newInstance(YYYY,MM,DD,HH,M,S);                  
+                        
+                        update singleInterview;
+                        
+                    } // isInterview
+                    
+                } // topic end
+                
+                else {
+                    // first name and last name search on LEAD
+                    String fullName = objectMap.get('topic').toString().split(':').get(0);
+                    
+                    Lead singleLead = [SELECT Name, Id, Email, 
+                                       (SELECT Id ,Meeting_URL__c , Scheduled_DateTime__c FROM Interviews__r) 
+                                       FROM Lead 
+                                       WHERE name=:fullName];
+      
+                    if(singleLead.Interviews__r.size()==1){
+                        
+                        Id interviewID = singleLead.Interviews__r.get(0).Id;
+                        Interview__c singleInterview = New Interview__c();
+                        singleInterview.id= interviewID;                        
+                        singleInterview.Meeting_URL__c=objectMap.get('join_url').toString();
+                        update singleInterview;
+                        
+                    }
+                }
+                                
+            }    //  meeting.created
+            when 'meeting.deleted' {        // when block 2
+                // meeting.created
+                // 
+                    newEvent.name=eventMap.get('event').toString();
+                    newEvent.data__c=objectMap.get('topic').toString();
+            }
+           
+            when else {      
+                // default
+                    newEvent.name='Full Details';
+                    newEvent.data__c=jsonString;
+            }
+    }      
+        insert newEvent;      
+        return '200';
+    }
+    
+}
