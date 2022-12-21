@@ -6,15 +6,13 @@ trigger ObjectTrigger on Object (before insert,after insert,
                                  switch on Trigger.operationType {
                                      when BEFORE_INSERT {
                                          for(Lead singleLead:Trigger.new){
-                                             
-                                             
+                                                                                     
                                          }
                                      }
                                      
                                      when AFTER_INSERT {
                                          for(Lead singleLead:Trigger.new){
-                                             
-                                             
+                                                                                         
                                          }  
                                      }
                                      when BEFORE_UPDATE {
