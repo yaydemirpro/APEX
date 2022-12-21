@@ -14,6 +14,6 @@ trigger leadDuplicationTrigger on Lead (before insert) {
                   //Trigger.new[0].Email.addError('Duplicate Lead');
                }
             }
-			  }
- 	  }
+	}
+    }
 }
