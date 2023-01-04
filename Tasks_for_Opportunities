@@ -1,0 +1,42 @@
+global class Tasks_for_Opportunities  implements Database.Batchable<sObject>{ 
+    
+    global Database.QueryLocator start(Database.BatchableContext BC)  {        
+        String query = 'SELECT Id, Name, OwnerId, Owner.ProfileId, Owner.isActive FROM Opportunity';
+        return Database.getQueryLocator(query);
+    }
+     
+    global void execute(Database.BatchableContext BC, List<Opportunity> OppList) {
+        System.debug(OppList);
+        List<Task> TaskList= new List<Task>();
+        List<User> SysAdminList = [SELECT Id, Name FROM User WHERE ProfileId='00e7S000000l4UZQAY'];
+        
+        for (Opportunity sOpp: Opplist){
+            Task sTask = new Task();
+            sTask.Subject = 'New Task for '+sOpp.Name;
+            sTask.Priority = 'Normal';
+            sTask.Status= 'Not Started';
+            sTask.WhatId= sOpp.Id;
+            
+            if (sOpp.Owner.isActive){
+                sTask.OwnerId = sOpp.OwnerId;
+                System.debug(sTask);
+            }             
+            else{                              
+                sTask.OwnerId = SysAdminList[0].id; 
+            }             
+        TaskList.add(sTask);                                
+        }                      
+        //insert TaskList;
+       database.SaveResult[]  Result = database.insert(TaskList, False);
+        for (Database.SaveResult a:Result){
+            if (a.isSuccess()){             
+            }else {
+                System.debug('ERROR : '+a.getErrors());               
+            }
+        }
+    }
+    global void finish(Database.BatchableContext BC) {
+        // execute any post-processing operations like sending email
+        System.debug('Batch Finished');
+    }
+}
