@@ -1,0 +1,20 @@
+trigger LeadTrigger on Lead (before insert, before update) {
+
+    for(Lead leadRecord : Trigger.new){
+        
+        if(String.isBlank(leadRecord.LeadSource)){
+            leadRecord.LeadSource='Other';
+        }
+        
+        if(String.isBlank(leadRecord.Industry)){
+					// error for the record
+           leadRecord.addError('APEX Error  : Industry field cannot be blank.'); 
+					// error for the field...
+					//leadRecord.Industry.addError('APEX Error  : Industry field cannot be blank.'); 
+        }
+        
+    }
+    
+    
+    
+}
