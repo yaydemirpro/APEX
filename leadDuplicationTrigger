@@ -5,11 +5,14 @@ trigger leadDuplicationTrigger on Lead (before insert) {
       when BEFORE_INSERT {
       
            List<Lead> leads = [SELECT Id, FirstName, LastName FROM Lead];
+	   
            for (Lead singleLead : leads){
+	   
                if (singleLead.FirstName==Trigger.new[0].FirstName &&
                    singleLead.LastName==Trigger.new[0].LastName 
                    // && singleLead.Email==Trigger.new[0].Email
                    ){
+		   
                   Trigger.new[0].LastName.addError('Duplicate Lead');
                   //Trigger.new[0].Email.addError('Duplicate Lead');
                }
