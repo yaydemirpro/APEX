@@ -23,10 +23,13 @@ global class Tasks_for_Opportunities  implements Database.Batchable<sObject>{
             }             
             else{                              
                 sTask.OwnerId = SysAdminList[0].id; 
-            }             
+            }    
+            
         TaskList.add(sTask);                                
-        }                      
+        }    
+        
         //insert TaskList;
+        
        database.SaveResult[]  Result = database.insert(TaskList, False);
         for (Database.SaveResult a:Result){
             if (a.isSuccess()){             
@@ -35,6 +38,7 @@ global class Tasks_for_Opportunities  implements Database.Batchable<sObject>{
             }
         }
     }
+    
     global void finish(Database.BatchableContext BC) {
         // execute any post-processing operations like sending email
         System.debug('Batch Finished');
