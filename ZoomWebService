@@ -8,6 +8,7 @@ global class ZoomWebService {
         return 'Hello Apex';
     }
     
+    
     @HttpPost
     global static String zoomMeeting(){
         
@@ -117,7 +118,8 @@ global class ZoomWebService {
                     newEvent.name='Full Details';
                     newEvent.data__c=jsonString;
             }
-    }      
+    }    
+    
         insert newEvent;      
         return '200';
     }
