@@ -1,0 +1,18 @@
+
+public with sharing class WeatherSearchController {
+    @AuraEnabled(cacheable=true)
+    public static List<Object> getWeatherData(String searchTerm) {
+      String apiKey = 'your-api-key-here';
+      String endpoint = 'https://api.openweathermap.org/data/2.5/weather?q=' + searchTerm + '&units=metric&appid=' + apiKey;
+      HttpRequest request = new HttpRequest();
+      request.setEndpoint(endpoint);
+      request.setMethod('GET');
+      Http http = new Http();
+      HttpResponse response = http.send(request);
+      if (response.getStatusCode() == 200) {
+        return (List<Object>) JSON.deserializeUntyped(response.getBody());
+      } else {
+        throw new AuraHandledException('Error retrieving weather data.');
+      }
+    }
+  }
