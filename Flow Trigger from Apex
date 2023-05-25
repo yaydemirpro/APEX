@@ -1,0 +1,25 @@
+// Flow'un başlatılacağı Apex sınıfı veya tetikleyici
+
+// Flow'u başlatmak için gerekli olan değişkenleri tanımlayın
+Map<String, Contact> inputVariables = new Map<String, Contact>();
+inputVariables.put('SingleRecord', 'singleContact');
+inputVariables.put('Count', 0);
+
+// Flow'un adını ve sürümünü belirleyin
+String flowName = 'Contact Email and User Notification';
+String flowVersion = '2';
+
+// Flow.Interview sınıfını kullanarak Flow'u başlatın
+Flow.Interview flow = new Flow.Interview(flowName, flowVersion);
+flow.start(inputVariables);
+
+// Flow'un tamamlanmasını bekleyin ve sonucu alın
+String flowStatus = flow.getStatus();
+
+// Flow tamamlandıysa, sonuçları işleyin
+if (flowStatus == 'Finished') {
+    Map<String, Contact> outputVariables = flow.getOutputVariables();
+    // Sonuçları kullanarak istediğiniz işlemleri gerçekleştirin
+} else {
+    // Flow tamamlanmadıysa, hata işleme veya uyarılar yapabilirsiniz
+}
