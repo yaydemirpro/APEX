@@ -1,0 +1,54 @@
+public class PDFProcessor {
+    public static void updateDescriptionWithPDFText(Id recordId) {
+        // İlgili ContentDocumentLink kayıtlarını ve PDF içeriğini sorgula
+        List<ContentDocumentLink> documentLinks = [
+            SELECT ContentDocumentId, ContentDocument.Title, ContentDocument.LatestPublishedVersionId, ContentDocument.LatestPublishedVersion.VersionData
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :recordId
+        ];
+
+        // Lead veya Contact kaydını al
+        SObject record;
+        if (Schema.sObjectType.Lead.isAccessible() && recordId.getSObjectType() == Lead.sObjectType) {
+            record = [SELECT Id, Description FROM Lead WHERE Id = :recordId];
+        } else if (Schema.sObjectType.Contact.isAccessible() && recordId.getSObjectType() == Contact.sObjectType) {
+            record = [SELECT Id, Description FROM Contact WHERE Id = :recordId];
+        } else {
+            // Geçersiz nesne türü
+            return;
+        }
+
+        // Description alanını güncelle
+        if (record != null) {
+            String existingDescription = (String) record.get('Description');
+            String updatedDescription = existingDescription != null ? existingDescription : '';
+
+            for (ContentDocumentLink link : documentLinks) {
+                ContentVersion version = [
+                    SELECT VersionData
+                    FROM ContentVersion
+                    WHERE ContentDocumentId = :link.ContentDocumentId
+                    AND IsLatest = true
+                ];
+
+                if (version != null) {
+                    String text = convertPDFToText(version.VersionData);
+                    updatedDescription += '\n' + text;
+                }
+            }
+
+            record.put('Description', updatedDescription);
+            update record;
+        }
+    }
+
+    private static String convertPDFToText(Blob pdfBlob) {
+        // PDF içeriğini metin formatına dönüştür
+        String base64Data = EncodingUtil.base64Encode(pdfBlob);
+        String text = ''; // Dönüştürülen metin
+
+        // Dönüşüm işlemlerini burada gerçekleştirin
+
+        return text;
+    }
+}
