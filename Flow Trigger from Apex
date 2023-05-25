@@ -2,8 +2,8 @@
 
 // Flow'u başlatmak için gerekli olan değişkenleri tanımlayın
 Map<String, Contact> inputVariables = new Map<String, Contact>();
-inputVariables.put('SingleRecord', 'singleContact');
-inputVariables.put('Count', 0);
+    inputVariables.put('SingleRecord', 'singleContact');
+    inputVariables.put('Count', 0);
 
 // Flow'un adını ve sürümünü belirleyin
 String flowName = 'Contact Email and User Notification';
