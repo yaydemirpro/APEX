@@ -1,4 +1,5 @@
 trigger UpdateEstimatedDeliveryDate on Package__c (after insert, after update) {
+    
     List<Id> shipmentIdsToUpdate = new List<Id>();
     
     for (Package__c packageRecord : Trigger.new) {
@@ -42,8 +43,9 @@ private Date calculateEstimatedDeliveryDate(List<Package__c> packages) {
     }
     
     // Tahmini teslim tarihini günler olarak hesapladıktan sonra, bugünkü tarihe ekleyerek sonuç elde ediyoruz
-    Date estimatedDeliveryDate = System.today().addDays(maxDays);
+        Date estimatedDeliveryDate = System.today().addDays(maxDays);
     
     return estimatedDeliveryDate;
 }
 }
+
