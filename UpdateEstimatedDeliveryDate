@@ -1,0 +1,49 @@
+trigger UpdateEstimatedDeliveryDate on Package__c (after insert, after update) {
+    List<Id> shipmentIdsToUpdate = new List<Id>();
+    
+    for (Package__c packageRecord : Trigger.new) {
+        shipmentIdsToUpdate.add(packageRecord.Shipment__c);
+    }
+    
+    List<Shipment__c> shipmentsToUpdate = [SELECT Id, Estimated_Delivery_Date__c, (SELECT Id, Weight__c, Dimensions__c FROM Packages__r) 
+                                           FROM Shipment__c WHERE Id IN :shipmentIdsToUpdate];
+    
+    for (Shipment__c shipmentRecord : shipmentsToUpdate) {
+        List<Package__c> packages = shipmentRecord.Packages__r;
+        
+        if (packages.size() > 0) {
+            Date estimatedDeliveryDate = calculateEstimatedDeliveryDate(packages);
+            
+            if (estimatedDeliveryDate != null && estimatedDeliveryDate != shipmentRecord.Estimated_Delivery_Date__c) {
+                shipmentRecord.Estimated_Delivery_Date__c = estimatedDeliveryDate;
+            }
+        }
+    }
+    
+    if (shipmentsToUpdate.size() > 0) {
+        update shipmentsToUpdate;
+    }
+
+
+private Date calculateEstimatedDeliveryDate(List<Package__c> packages) {
+    Integer maxDays = 0;
+    
+    for (Package__c packageRecord : packages) {
+        // Sadece ağırlığı kullanarak tahmini teslim süresini hesaplayalım
+        Decimal weight = packageRecord.Weight__c;
+        
+        // Hesaplama örneği: Her 3 birim ağırlık için 1 gün ekleyelim
+        decimal a = Math.ceil(weight / 3);
+        Integer daysToAdd = a.intValue();
+        
+        if (daysToAdd > maxDays) {
+            maxDays = daysToAdd;
+        }
+    }
+    
+    // Tahmini teslim tarihini günler olarak hesapladıktan sonra, bugünkü tarihe ekleyerek sonuç elde ediyoruz
+    Date estimatedDeliveryDate = System.today().addDays(maxDays);
+    
+    return estimatedDeliveryDate;
+}
+}
