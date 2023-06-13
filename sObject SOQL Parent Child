@@ -1,5 +1,5 @@
-// parent to Child SOQL 
-// Generic SOBJECT
+// parent to Child SOQL. 
+// Generic SOBJECT.
 Sobject CWSobj = [SELECT Id, Name,
              (SELECT Id, Name, Phone,Email FROM Contacts),
              (SELECT Id, Name, Amount, CloseDate, StageName FROM Opportunities)
@@ -45,6 +45,5 @@ System.debug(CW.Opportunities); // List<Opportunity> // Opportunity[]
 for(Opportunity loopOpp:CW.Opportunities){
     System.debug(loopOpp.Name);
     System.debug(loopOpp.CloseDate);
-    
 }
 */
