@@ -6,7 +6,6 @@ public class PDFProcessor {
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :recordId
         ];
-
         // Lead veya Contact kaydını al
         SObject record;
         if (Schema.sObjectType.Lead.isAccessible() && recordId.getSObjectType() == Lead.sObjectType) {
@@ -18,7 +17,7 @@ public class PDFProcessor {
             return;
         }
 
-        // Description alanını güncelle
+        // Description alanını güncelle.
         if (record != null) {
             String existingDescription = (String) record.get('Description');
             String updatedDescription = existingDescription != null ? existingDescription : '';
@@ -47,7 +46,7 @@ public class PDFProcessor {
         String base64Data = EncodingUtil.base64Encode(pdfBlob);
         String text = ''; // Dönüştürülen metin
 
-        // Dönüşüm işlemlerini burada gerçekleştirin
+        // Dönüşüm işlemlerini burada gerçekleştirin.
 
         return text;
     }
