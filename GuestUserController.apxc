@@ -1,5 +1,6 @@
 
 public with sharing class GuestUserController {
+
     public GuestUserController() {
     }
     @AuraEnabled
@@ -15,6 +16,7 @@ public with sharing class GuestUserController {
         }
         return singleLead.Id;
     }
+
     @AuraEnabled(cacheable=true)
     public static Campaign retrieveCampaign(String searchCampaign){
         String search='%'+searchCampaign+'%';
@@ -26,6 +28,7 @@ public with sharing class GuestUserController {
         }
         return singleCampaign;
     }
+
     @AuraEnabled
     public static string createAd(Ad__c singleAd){
         try {
@@ -35,6 +38,7 @@ public with sharing class GuestUserController {
         }
         return singleAd.id;
     }
+
     @AuraEnabled
     public static string createCampaignMember(CampaignMember cm){
         try {
