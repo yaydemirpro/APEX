@@ -1,4 +1,5 @@
 trigger AccountOppTrigger on Account (after insert, after update) {
+
     if(Trigger.isInsert && Trigger.isAfter) {
         List<Opportunity> listOfOpportunities = new List<Opportunity>();
         for(Account acc : Trigger.new) {
@@ -16,6 +17,7 @@ trigger AccountOppTrigger on Account (after insert, after update) {
     }
     
     if(Trigger.isUpdate && Trigger.isAfter) {
+
         List<Opportunity> listOfOpportunities = new List<Opportunity>();
         for(Account acc : Trigger.new) {
             if(acc.Industry != Trigger.oldMap.get(acc.Id).Industry && acc.Industry == 'Agriculture') {
