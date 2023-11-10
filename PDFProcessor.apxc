@@ -1,4 +1,5 @@
 public class PDFProcessor {
+
     public static void updateDescriptionWithPDFText(Id recordId) {
         // İlgili ContentDocumentLink kayıtlarını ve PDF içeriğini sorgula
         List<ContentDocumentLink> documentLinks = [
@@ -41,12 +42,13 @@ public class PDFProcessor {
         }
     }
 
+
     private static String convertPDFToText(Blob pdfBlob) {
         // PDF içeriğini metin formatına dönüştür
         String base64Data = EncodingUtil.base64Encode(pdfBlob);
         String text = ''; // Dönüştürülen metin
 
-        // Dönüşüm işlemlerini burada gerçekleştirin.
+        // Dönüşüm işlemlerini burada gerçekleştirin.  
 
         return text;
     }
