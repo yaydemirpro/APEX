@@ -1,10 +1,13 @@
 public class TaskForOpps {    
 
+
     public static void CreateTasksForOpps(){
         List<Opportunity> OppList = [SELECT Id, Name, OwnerId, Owner.ProfileId, Owner.isActive FROM Opportunity];
         List<User> SysAdminList = [SELECT Id, Name FROM User WHERE ProfileId='00e7S000000l4UZQAY'];
-        
+
+
         List<Task> TaskList= new List<Task>();
+
 
         for (Opportunity sOpp: Opplist){
             Task sTask = new Task();
@@ -22,6 +25,7 @@ public class TaskForOpps {
             }             
         TaskList.add(sTask);                                
         }                                 
+
 
         database.SaveResult[]  Result = database.insert(TaskList, False);
         for (Database.SaveResult a:Result){
