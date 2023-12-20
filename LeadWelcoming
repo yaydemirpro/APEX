@@ -15,5 +15,7 @@ trigger LeadWelcoming on Lead (Before Update) {
                Messaging.Email [] emails = new Messaging.Email []{msg};
                Messaging.sendEmail(emails);
            }
+
     }
+
 }
